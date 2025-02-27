@@ -1,5 +1,14 @@
 import pygame
 import random
+import tkinter as tk
+from tkinter import messagebox
+
+def gameover():
+    root = tk.Tk()
+    root.withdraw()
+    messagebox.showinfo("Game over!", "Press OK to restart")
+    root.destroy()
+
 # laziness
 true = True
 false = False
@@ -16,13 +25,39 @@ class Player:
         me.posX = x
         me.posY = y
         me.speed = speed
+        me.t = "player.png"
+        me.img = pygame.image.load(me.t)
+        me.sz = 16
+        me.img = pygame.transform.scale(me.img, (me.sz, me.sz))
+        me.rect = me.img.get_rect()
     def update(me):
         if me.posX <= 0:
             me.posX = 1
         elif me.posX >= sx:
             me.posX = sx-1
+    def die(me):
+        gameover()
+        global level, bullets, ens
+        me.posX = 50
+        me.posY = 620
+        level = 0
+        bullets.clear()
+        ens.clear()
+        newEnemy(3, false, level, true)
+    def check(me, ob):
+        # Update rect position before checking collision
+        me.rect.topleft = (me.posX/2, me.posY/2)
+        ob.rect.topleft = (ob.posX/2, ob.posY/2)
+
+        if me.rect.colliderect(ob.rect):
+            if not ob.ps:
+                me.die()
+                if ob in bullets:
+                    bullets.remove(ob)  # Remove the bullet that hit the enemy
+                else:
+                    print(f"Warning - bullet #{id(ob)} does not exist")
 class Bullet:
-    def __init__(me, x, y, speed):
+    def __init__(me, x, y, speed, shotByPlayer):
         me.posX = x
         me.posY = y
         me.speed = speed
@@ -31,6 +66,7 @@ class Bullet:
         me.sz = 8
         me.img = pygame.transform.scale(me.img, (me.sz, me.sz))
         me.rect = me.img.get_rect()
+        me.ps = shotByPlayer
     def update(me):
         me.posY += me.speed
         if me.posX >= sx or me.posX <= 0 or me.posY >= sy or me.posY <= 0:
@@ -52,10 +88,15 @@ class Enemy:
         me.sz = 16
         me.img = pygame.transform.scale(me.img, (me.sz, me.sz))
         me.rect = me.img.get_rect()
+        me.tus = random.randrange(70, 100)
     def update(me):
         me.posX += me.cd * me.speed
         if me.posX >= sx or me.posX <= 0:
             me.cd = 0-me.cd
+        if me.tus == 0:
+            bullets.append(Bullet(me.posX, me.posY+32, 10, False))
+            me.tus = random.randrange(50, 70)
+        me.tus -= 1
     def die(me):
         ens.remove(me)
     def check(me, ob):
@@ -64,8 +105,9 @@ class Enemy:
         ob.rect.topleft = (ob.posX/2, ob.posY/2)
 
         if me.rect.colliderect(ob.rect):
-            me.die()
-            bullets.remove(ob)  # Remove the bullet that hit the enemy
+            if ob.ps:
+                me.die()
+                bullets.remove(ob)  # Remove the bullet that hit the enemy
 
 # functions
 def rect(color, x, y, width, height):
@@ -120,11 +162,15 @@ while not starCount == 0:
 while running:
     screen.fill(bg)
     keys = pygame.key.get_pressed()
-    img("player.png", p.posX, p.posY, 16)
+
+    # player logic
+    imgS(p.img, p.posX, p.posY, p.sz)
     p.update()
+    for b in bullets[:]:
+        p.check(b)
 
     # star - draw
-    for s in stars:
+    for s in stars[:]:
         img("star.png",s.x, s.y, 16)
 
     # controls
@@ -161,7 +207,7 @@ while running:
             running = false
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
-                bullets.append(Bullet(p.posX, p.posY, -10))
+                bullets.append(Bullet(p.posX, p.posY, -10, True))
             if event.key == pygame.K_d:
                 print(bullets)
     pygame.display.flip()

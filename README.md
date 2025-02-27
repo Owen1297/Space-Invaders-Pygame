@@ -1,6 +1,7 @@
 # Space-Invaders-Pygame
 My first pygame... work in progress
-yes...currently the code is 169 lines...69 🕶️
+ALMOST DONEEEE just gotta add some twist...heheheh
+i just reached line #215 and i am done with the base game
 
 # P.S. if your too lazy to manually install pygame, run the .ps1 file, otherwise run:
 `cd ~` - so it installs everywhere

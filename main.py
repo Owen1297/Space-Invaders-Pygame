@@ -3,10 +3,10 @@ import random
 import tkinter as tk
 from tkinter import messagebox
 
-def gameover():
+def popup(msg):
     root = tk.Tk()
     root.withdraw()
-    messagebox.showinfo("Game over!", "Press OK to restart")
+    messagebox.showinfo(msg)
     root.destroy()
 
 # laziness
@@ -38,7 +38,7 @@ class Player:
         elif me.posX >= sx:
             me.posX = sx
     def die(me):
-        gameover()
+        popup("Game over!", "Press OK to restart")
         global level, bullets, ens
         me.posX = 50
         me.posY = 620
@@ -199,7 +199,7 @@ while running:
     
     # win logic
     if level >= 10:
-        print("Won!!")
+        popup("You won! press OK to close")
         running = false
 
     # event handling

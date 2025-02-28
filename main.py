@@ -18,7 +18,9 @@ pygame.init()
 sx = 640
 sy = sx
 screen = pygame.display.set_mode((sx, sy))
-print("Yes, this game is 169 lines of code...")
+pygame.display.set_caption("Space Invaders")
+pygame.display.set_icon(pygame.image.load("player.png"))
+
 # classes
 class Player:
     def __init__(me, x, y, speed):
@@ -156,7 +158,6 @@ while not starCount == 0:
     sty = random.randrange(0, sy)
     stars.append(Star(stx, sty))
     starCount -= 1
-
 
 # main loop
 while running:

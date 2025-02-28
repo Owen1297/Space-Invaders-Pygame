@@ -32,9 +32,9 @@ class Player:
         me.rect = me.img.get_rect()
     def update(me):
         if me.posX <= 0:
-            me.posX = 1
+            me.posX = 0
         elif me.posX >= sx:
-            me.posX = sx-1
+            me.posX = sx
     def die(me):
         gameover()
         global level, bullets, ens

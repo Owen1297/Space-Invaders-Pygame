@@ -17,3 +17,4 @@ note: idk why i was so excited
 2. Python, this should work on the newest version but i haven't tested it yet.just go to the python website and install it, it's a coding language(not a virus)well it just lets yoy run python code, which is the language i used to code this
 
 # INSTRUCTIONS:
+currently typing...
